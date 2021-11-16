@@ -58,12 +58,16 @@
 //!
 #[macro_use]
 extern crate derive_builder;
+extern crate indexmap;
+extern crate libc;
 #[macro_use]
 extern crate log;
-extern crate xgboost_sys;
-extern crate libc;
 extern crate tempfile;
-extern crate indexmap;
+extern crate xgboost_sys;
+
+pub use booster::{Booster, FeatureMap, FeatureType};
+pub use dmatrix::DMatrix;
+pub use error::{XGBError, XGBResult};
 
 macro_rules! xgb_call {
     ($x:expr) => {
@@ -72,11 +76,9 @@ macro_rules! xgb_call {
 }
 
 mod error;
-pub use error::{XGBResult, XGBError};
 
 mod dmatrix;
-pub use dmatrix::DMatrix;
 
 mod booster;
-pub use booster::{Booster, FeatureMap, FeatureType};
+
 pub mod parameters;
