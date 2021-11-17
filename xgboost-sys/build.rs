@@ -1,10 +1,11 @@
 extern crate bindgen;
 extern crate cmake;
 
-use cmake::Config;
-use std::process::Command;
 use std::env;
 use std::path::{Path, PathBuf};
+use std::process::Command;
+
+use cmake::Config;
 
 fn main() {
     let target = env::var("TARGET").unwrap();
@@ -34,7 +35,10 @@ fn main() {
         .clang_args(&["-x", "c++", "-std=c++11"])
         .clang_arg(format!("-I{}", xgb_root.join("include").display()))
         .clang_arg(format!("-I{}", xgb_root.join("rabit/include").display()))
-        .clang_arg(format!("-I{}", xgb_root.join("dmlc-core/include").display()))
+        .clang_arg(format!(
+            "-I{}",
+            xgb_root.join("dmlc-core/include").display()
+        ))
         .generate()
         .expect("Unable to generate bindings.");
 
@@ -44,8 +48,14 @@ fn main() {
         .expect("Couldn't write bindings.");
 
     println!("cargo:rustc-link-search={}", xgb_root.join("lib").display());
-    println!("cargo:rustc-link-search={}", xgb_root.join("rabit/lib").display());
-    println!("cargo:rustc-link-search={}", xgb_root.join("dmlc-core").display());
+    println!(
+        "cargo:rustc-link-search={}",
+        xgb_root.join("rabit/lib").display()
+    );
+    println!(
+        "cargo:rustc-link-search={}",
+        xgb_root.join("dmlc-core").display()
+    );
 
     // link to appropriate C++ lib
     if target.contains("apple") {
@@ -57,7 +67,10 @@ fn main() {
     }
 
     println!("cargo:rustc-link-search=native={}", dst.display());
-    println!("cargo:rustc-link-search=native={}", dst.join("lib").display());
+    println!(
+        "cargo:rustc-link-search=native={}",
+        dst.join("lib").display()
+    );
     println!("cargo:rustc-link-lib=static=dmlc");
     println!("cargo:rustc-link-lib=static=xgboost");
 }
