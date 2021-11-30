@@ -26,6 +26,7 @@ fn main() {
     let dst = Config::new(&xgb_root)
         .uses_cxx11()
         .define("BUILD_STATIC_LIB", "ON")
+        .define("DISABLE_OPENMP", "")
         .build();
 
     let xgb_root = xgb_root.canonicalize().unwrap();
@@ -60,7 +61,6 @@ fn main() {
     // link to appropriate C++ lib
     if target.contains("apple") {
         println!("cargo:rustc-link-lib=c++");
-        println!("cargo:rustc-link-lib=dylib=omp");
     } else {
         println!("cargo:rustc-link-lib=stdc++");
         println!("cargo:rustc-link-lib=dylib=gomp");
