@@ -25,7 +25,7 @@ fn main() {
     let dst = Config::new(&xgb_root)
         .uses_cxx11()
         .define("BUILD_STATIC_LIB", "ON")
-        .define("DISABLE_OPENMP", "")
+        .define("DISABLE_OPENMP", "yes")
         .build();
 
     let xgb_root = xgb_root.canonicalize().unwrap();
