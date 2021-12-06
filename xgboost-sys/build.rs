@@ -26,6 +26,7 @@ fn main() {
         .uses_cxx11()
         .define("BUILD_STATIC_LIB", "ON")
         .define("DISABLE_OPENMP", "yes")
+        .define("USE_OPENMP", "OFF")
         .build();
 
     let xgb_root = xgb_root.canonicalize().unwrap();
