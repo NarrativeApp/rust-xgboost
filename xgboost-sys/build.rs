@@ -1,11 +1,10 @@
 extern crate bindgen;
 extern crate cmake;
 
+use cmake::Config;
 use std::env;
 use std::path::{Path, PathBuf};
 use std::process::Command;
-
-use cmake::Config;
 
 fn main() {
     let target = env::var("TARGET").unwrap();
@@ -63,7 +62,6 @@ fn main() {
         println!("cargo:rustc-link-lib=c++");
     } else {
         println!("cargo:rustc-link-lib=stdc++");
-        println!("cargo:rustc-link-lib=dylib=gomp");
     }
 
     println!("cargo:rustc-link-search=native={}", dst.display());
