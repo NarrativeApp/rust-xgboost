@@ -25,7 +25,7 @@ fn main() {
     let dst = Config::new(&xgb_root)
         .uses_cxx11()
         .define("BUILD_STATIC_LIB", "ON")
-        .define("DISABLE_OPENMP", "yes")
+        .define("DISABLE_OPENMP", "")
         .define("USE_OPENMP", "OFF")
         .build();
 
@@ -63,6 +63,7 @@ fn main() {
         println!("cargo:rustc-link-lib=c++");
     } else {
         println!("cargo:rustc-link-lib=stdc++");
+        println!("cargo:rustc-link-lib=dylib=gomp")
     }
 
     println!("cargo:rustc-link-search=native={}", dst.display());
