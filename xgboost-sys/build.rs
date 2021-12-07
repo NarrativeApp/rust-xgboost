@@ -27,6 +27,7 @@ fn main() {
         .define("BUILD_STATIC_LIB", "ON")
         .define("DISABLE_OPENMP", "")
         .define("USE_OPENMP", "OFF")
+        .define("USE_CUDA", "OFF")
         .build();
 
     let xgb_root = xgb_root.canonicalize().unwrap();
