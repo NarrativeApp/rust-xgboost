@@ -679,6 +679,9 @@ impl Drop for Booster {
     }
 }
 
+/// Booster is safe to send between threads as long as it isn't cloneable
+unsafe impl Send for Booster {}
+
 /// Maps a feature index to a name and type, used when dumping models as text.
 ///
 /// See [dump_model](struct.Booster.html#method.dump_model) for usage.
