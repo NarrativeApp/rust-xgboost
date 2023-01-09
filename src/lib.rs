@@ -68,11 +68,23 @@ extern crate xgboost_sys;
 pub use booster::{Booster, FeatureMap, FeatureType};
 pub use dmatrix::DMatrix;
 pub use error::{XGBError, XGBResult};
+use std::ffi::CString;
+use std::path::Path;
 
 macro_rules! xgb_call {
     ($x:expr) => {
         XGBError::check_return_value(unsafe { $x })
     };
+}
+
+fn path_to_cstring(path: &Path) -> CString {
+    #[cfg(unix)]
+    use std::os::unix::ffi::OsStrExt;
+    #[cfg(unix)]
+    let fname = std::ffi::CString::new(path.as_os_str().as_bytes()).unwrap();
+    #[cfg(windows)]
+    let fname = std::ffi::CString::new(path.to_string_lossy().as_bytes()).unwrap();
+    fname
 }
 
 mod error;

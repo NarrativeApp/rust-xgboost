@@ -1,12 +1,11 @@
 use std::convert::TryInto;
-use std::os::unix::ffi::OsStrExt;
 use std::{ffi, path::Path, ptr, slice};
 
 use libc::{c_float, c_uint};
 
 use xgboost_sys;
 
-use super::{XGBError, XGBResult};
+use super::{path_to_cstring, XGBError, XGBResult};
 
 static KEY_GROUP_PTR: &'static str = "group_ptr";
 static KEY_GROUP: &'static str = "group";
@@ -211,7 +210,7 @@ impl DMatrix {
     pub fn load<P: AsRef<Path>>(path: P) -> XGBResult<Self> {
         debug!("Loading DMatrix from: {}", path.as_ref().display());
         let mut handle = ptr::null_mut();
-        let fname = ffi::CString::new(path.as_ref().as_os_str().as_bytes()).unwrap();
+        let fname = path_to_cstring(path.as_ref());
         let silent = true;
         xgb_call!(xgboost_sys::XGDMatrixCreateFromFile(
             fname.as_ptr(),
@@ -224,7 +223,7 @@ impl DMatrix {
     /// Serialise this `DMatrix` as a binary file to given path.
     pub fn save<P: AsRef<Path>>(&self, path: P) -> XGBResult<()> {
         debug!("Writing DMatrix to: {}", path.as_ref().display());
-        let fname = ffi::CString::new(path.as_ref().as_os_str().as_bytes()).unwrap();
+        let fname = path_to_cstring(path.as_ref());
         let silent = true;
         xgb_call!(xgboost_sys::XGDMatrixSaveBinary(
             self.handle,

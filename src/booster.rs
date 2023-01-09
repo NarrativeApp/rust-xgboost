@@ -1,6 +1,5 @@
 use std::collections::{BTreeMap, HashMap};
 use std::io::{self, BufRead, BufReader, Write};
-use std::os::unix::ffi::OsStrExt;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::{ffi, fmt, fs::File, ptr, slice};
@@ -14,7 +13,7 @@ use error::XGBError;
 use parameters::{BoosterParameters, TrainingParameters};
 use xgboost_sys;
 
-use super::XGBResult;
+use super::{path_to_cstring, XGBResult};
 
 pub type CustomObjective = fn(&[f32], &DMatrix) -> (Vec<f32>, Vec<f32>);
 
@@ -94,7 +93,7 @@ impl Booster {
     /// Save this Booster as a binary file at given path.
     pub fn save<P: AsRef<Path>>(&self, path: P) -> XGBResult<()> {
         debug!("Writing Booster to: {}", path.as_ref().display());
-        let fname = ffi::CString::new(path.as_ref().as_os_str().as_bytes()).unwrap();
+        let fname = path_to_cstring(path.as_ref());
         xgb_call!(xgboost_sys::XGBoosterSaveModel(self.handle, fname.as_ptr()))
     }
 
@@ -110,7 +109,7 @@ impl Booster {
             )));
         }
 
-        let fname = ffi::CString::new(path.as_ref().as_os_str().as_bytes()).unwrap();
+        let fname = path_to_cstring(path.as_ref());
         let mut handle = ptr::null_mut();
         xgb_call!(xgboost_sys::XGBoosterCreate(ptr::null(), 0, &mut handle))?;
         xgb_call!(xgboost_sys::XGBoosterLoadModel(handle, fname.as_ptr()))?;
@@ -596,7 +595,7 @@ impl Booster {
         feature_map_path: Option<&PathBuf>,
     ) -> XGBResult<String> {
         let fmap = if let Some(path) = feature_map_path {
-            ffi::CString::new(path.as_os_str().as_bytes()).unwrap()
+            path_to_cstring(path.as_ref())
         } else {
             ffi::CString::new("").unwrap()
         };
