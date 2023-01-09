@@ -1,10 +1,11 @@
 extern crate bindgen;
 extern crate cmake;
+extern crate fs_extra;
 
 use cmake::Config;
 use std::env;
 use std::path::{Path, PathBuf};
-use std::process::Command;
+use fs_extra::dir;
 
 fn main() {
     let target = env::var("TARGET").unwrap();
@@ -13,9 +14,11 @@ fn main() {
 
     // copy source code into OUT_DIR for compilation if it doesn't exist
     if !xgb_root.exists() {
-        Command::new("cp")
-            .args(&["-r", "xgboost", xgb_root.to_str().unwrap()])
-            .status()
+        let copy_options = dir::CopyOptions {
+            copy_inside: true,
+            ..Default::default()
+        };
+        dir::copy("xgboost", &xgb_root, &copy_options)
             .unwrap_or_else(|e| {
                 panic!("Failed to copy ./xgboost to {}: {}", xgb_root.display(), e);
             });
