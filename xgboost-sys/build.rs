@@ -3,9 +3,9 @@ extern crate cmake;
 extern crate fs_extra;
 
 use cmake::Config;
+use fs_extra::dir;
 use std::env;
 use std::path::{Path, PathBuf};
-use fs_extra::dir;
 
 fn main() {
     let target = env::var("TARGET").unwrap();
@@ -18,10 +18,9 @@ fn main() {
             copy_inside: true,
             ..Default::default()
         };
-        dir::copy("xgboost", &xgb_root, &copy_options)
-            .unwrap_or_else(|e| {
-                panic!("Failed to copy ./xgboost to {}: {}", xgb_root.display(), e);
-            });
+        dir::copy("xgboost", &xgb_root, &copy_options).unwrap_or_else(|e| {
+            panic!("Failed to copy ./xgboost to {}: {}", xgb_root.display(), e);
+        });
     }
 
     // CMake
@@ -69,6 +68,8 @@ fn main() {
     // link to appropriate C++ lib
     if target.contains("apple") {
         println!("cargo:rustc-link-lib=c++");
+    } else if target.contains("windows-msvc") {
+        // No need to link to C++ standard library explicitly on Windows MSVC
     } else {
         println!("cargo:rustc-link-lib=stdc++");
         println!("cargo:rustc-link-lib=dylib=gomp")
