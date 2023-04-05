@@ -31,7 +31,7 @@ fn main() {
         .define("USE_OPENMP", "OFF")
         .define("USE_CUDA", "OFF")
         // This is neccessary to fix some breakage on Windows caused by XGBoost's CMake scripts
-        .define("CMAKE_CONFIGURATION_TYPES", "Debug;Release")
+        .define("CMAKE_CONFIGURATION_TYPES", "Debug;Release;RelWithDebInfo")
         .build();
 
     // canonicalization on Windows does more harm than good because it converts the path to UNC
