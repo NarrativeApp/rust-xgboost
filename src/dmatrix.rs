@@ -139,7 +139,7 @@ impl DMatrix {
     ) -> XGBResult<Self> {
         assert_eq!(indices.len(), data.len());
         let mut handle = ptr::null_mut();
-        let indptr: Vec<u64> = indptr.iter().map(|x| *x as u64).collect();
+        let indptr: Vec<usize> = indptr.to_vec();
         let indices: Vec<u32> = indices.iter().map(|x| *x as u32).collect();
         let num_cols = num_cols.unwrap_or(0); // infer from data if 0
         xgb_call!(xgboost_sys::XGDMatrixCreateFromCSREx(
@@ -170,7 +170,7 @@ impl DMatrix {
     ) -> XGBResult<Self> {
         assert_eq!(indices.len(), data.len());
         let mut handle = ptr::null_mut();
-        let indptr: Vec<u64> = indptr.iter().map(|x| *x as u64).collect();
+        let indptr: Vec<usize> = indptr.to_vec();
         let indices: Vec<u32> = indices.iter().map(|x| *x as u32).collect();
         let num_rows = num_rows.unwrap_or(0); // infer from data if 0
         xgb_call!(xgboost_sys::XGDMatrixCreateFromCSCEx(
